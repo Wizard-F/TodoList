@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
-import {useState, useEffect} from 'react';
+import { StyleSheet, FlatList, SafeAreaView } from 'react-native';
+import {useState} from 'react';
+import { CheckBox } from '@rneui/themed';
 
 
 export default function App() {
@@ -28,18 +29,15 @@ export default function App() {
   };
 
   const Item = ({ item }) => {
-    const backgroundColor = item.done ? "#6e3b6e" : "#f9c2ff";
-    const textColor = item.done ? 'white' : 'black';
-
+    const textStyle = item.done && {textDecorationLine: 'line-through', textDecorationStyle: 'solid'};
     return (
-      <TouchableOpacity
+      <CheckBox
+        center
+        title={item.content}
+        checked={item.done}
         onPress={() => handlePress(item)}
-        style={[styles.item, {backgroundColor: backgroundColor}]}
-      >
-        <Text style={[styles.content, {color: textColor}]}>
-          {item.content}
-        </Text>
-      </TouchableOpacity>
+        textStyle={textStyle}
+      />
     );
   };
 
@@ -56,8 +54,8 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 40,
   },
   item: {
     padding: 20,
