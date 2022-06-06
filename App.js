@@ -1,26 +1,42 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, FlatList, SafeAreaView, TextInput, View, TouchableOpacity, Text } from 'react-native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import { CheckBox } from '@rneui/themed';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
-  const [todos, setTodos] = useState([
-    {
-    "id": 0,
-    "content": "Learn Redis",
-    "done": false
-    },
-    {
-      "id": 1,
-      "content": "Learn React",
-      "done": true
+  const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    const getTodosData = async () => {
+      try {
+        let todosData = await AsyncStorage.getItem('@todos');
+        todosData = JSON.parse(todosData);
+        setTodos(todosData);
+      } catch (error) {
+        console.log(error);
+      }
     }
-  ]);
+    getTodosData();
+  }, []);
+
+  useEffect(() => {
+    const setTodosData = async () => {
+      try {
+        await AsyncStorage.setItem('@todos', JSON.stringify(todos));
+        console.log('setTodosData');
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    setTodosData();
+  }, [todos]);
 
   const [newTodo, setNewTodo] = useState('');
   const submitDisabled = newTodo === '';
 
-  const handlePress = item => {
+  const handleToggleTodoStatus = item => {
     setTodos(todos.map(todo => {
       if (todo.id === item.id) {
         return {...todo, done: !todo.done};
@@ -41,7 +57,7 @@ export default function App() {
       <CheckBox
         title={item.content}
         checked={item.done}
-        onPress={() => handlePress(item)}
+        onPress={() => handleToggleTodoStatus(item)}
         textStyle={textStyle}
       />
     );
