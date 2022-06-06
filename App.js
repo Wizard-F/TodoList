@@ -1,8 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, FlatList, SafeAreaView, TextInput } from 'react-native';
+import { StyleSheet, FlatList, SafeAreaView, TextInput, View, TouchableOpacity, Text } from 'react-native';
 import {useState} from 'react';
 import { CheckBox } from '@rneui/themed';
-
 
 export default function App() {
   const [todos, setTodos] = useState([
@@ -19,6 +18,7 @@ export default function App() {
   ]);
 
   const [newTodo, setNewTodo] = useState('');
+  const submitDisabled = newTodo === '';
 
   const handlePress = item => {
     setTodos(todos.map(todo => {
@@ -30,13 +30,13 @@ export default function App() {
     }));
   };
 
-  const handleSubmitNewTodo = ({ nativeEvent: { text, eventCount, target }}) => {
-    setTodos([...todos, {id: todos.length, content: text, done: false}]);
+  const handleSubmitNewTodo = () => {
+    setTodos([...todos, {id: todos.length, content: newTodo, done: false}]);
     setNewTodo('');
   };
 
   const Item = ({ item }) => {
-    const textStyle = item.done && {textDecorationLine: 'line-through', textDecorationStyle: 'solid'};
+    const textStyle = item.done && {textDecorationLine: 'line-through', textDecorationStyle: 'solid', color: 'grey'};
     return (
       <CheckBox
         title={item.content}
@@ -49,13 +49,22 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TextInput
-        style={styles.input}
-        value={newTodo}
-        onChangeText={setNewTodo}
-        placeholder='Create a new todo item'
-        onSubmitEditing={handleSubmitNewTodo}
-      />
+      <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignContent: 'center'}}>
+        <TextInput
+          style={styles.input}
+          value={newTodo}
+          onChangeText={setNewTodo}
+          placeholder='Create a new todo item'
+          onSubmitEditing={handleSubmitNewTodo}
+        />
+        <TouchableOpacity
+          onPress={handleSubmitNewTodo}
+          disabled={submitDisabled}
+          style={submitDisabled ? {...styles.submit, ...styles.submitDisabledOverride} : styles.submit}
+        >
+          <Text>Submit</Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
         data={todos}
         renderItem={Item}
@@ -66,6 +75,18 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+  submit: {
+    height: 40,
+    margin: 20, 
+    marginStart: 0, 
+    padding: 10,
+    backgroundColor: 'cyan',
+    borderRadius: 5,
+    alignItems: 'center'
+  },
+  submitDisabledOverride: {
+    backgroundColor: 'grey'
+  },
   input: {
     height: 40,
     margin: 20,
