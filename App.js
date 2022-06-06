@@ -2,11 +2,6 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
 import {useState, useEffect} from 'react';
 
-// const Item = ({ item, onPress, backgroundColor, textColor }) => (
-//   <TouchableOpacity onPress={onPress} style={[styles.item, backgroundColor]}>
-//     <Text style={[styles.content, textColor]}>{item.content}</Text>
-//   </TouchableOpacity>
-// );
 
 export default function App() {
   const [todos, setTodos] = useState([
@@ -37,8 +32,13 @@ export default function App() {
     const textColor = item.done ? 'white' : 'black';
 
     return (
-      <TouchableOpacity onPress={() => handlePress(item)} style={[styles.item, backgroundColor]}>
-        <Text style={[styles.content, textColor]}>{item.content}</Text>
+      <TouchableOpacity
+        onPress={() => handlePress(item)}
+        style={[styles.item, {backgroundColor: backgroundColor}]}
+      >
+        <Text style={[styles.content, {color: textColor}]}>
+          {item.content}
+        </Text>
       </TouchableOpacity>
     );
   };
